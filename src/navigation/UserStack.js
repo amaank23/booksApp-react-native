@@ -2,10 +2,19 @@ import { StatusBar } from "expo-status-bar";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import Home from "../views/Home";
 import { NavigationContainer } from "@react-navigation/native";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItem,
+  DrawerItemList,
+} from "@react-navigation/drawer";
 import { getHeaderTitle } from "@react-navigation/elements";
 import Categories from "../views/Categories";
 import HeaderCustom from "../components/header/Header";
+import { getAuth, signOut } from "firebase/auth";
+import { app } from "../../firebaseConfig";
+
+const auth = getAuth(app);
 
 const Drawer = createDrawerNavigator();
 
@@ -28,6 +37,14 @@ export default function UserStack() {
                 />
               );
             },
+          }}
+          drawerContent={(props) => {
+            return (
+              <DrawerContentScrollView {...props}>
+                <DrawerItemList {...props} />
+                <DrawerItem label={"Logout"} onPress={() => signOut(auth)} />
+              </DrawerContentScrollView>
+            );
           }}
         >
           <Drawer.Screen name="All Books" component={Home} options={{}} />

@@ -1,5 +1,13 @@
 import React, { useState } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { app } from "../../firebaseConfig";
+
+const auth = getAuth(app);
 
 const Auth = () => {
   const [credentials, setCredentials] = useState({
@@ -15,11 +23,42 @@ const Auth = () => {
     }));
   };
 
-  function handleSubmit(){
-    if(isLogin){
-
+  async function handleSubmit() {
+    if (isLogin) {
+      if (credentials.email !== "" && credentials.password !== "") {
+        try {
+          let res = await signInWithEmailAndPassword(
+            auth,
+            credentials.email,
+            credentials.password
+          );
+          console.log(res);
+        } catch (error) {
+          console.log("ERROR MESSAGE", error.message);
+        }
+      } else {
+        console.log("Fields should not be Empty");
+      }
     } else {
-      
+      if (
+        credentials.email !== "" &&
+        credentials.password !== "" &&
+        credentials.confirmPassword !== ""
+      ) {
+        // create user
+        try {
+          let res = await createUserWithEmailAndPassword(
+            auth,
+            credentials.email,
+            credentials.password
+          );
+          console.log(res);
+        } catch (error) {
+          console.log(error.message);
+        }
+      } else {
+        console.log("Fields should not be Empty");
+      }
     }
   }
 
